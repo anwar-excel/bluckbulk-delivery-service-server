@@ -19,15 +19,29 @@ async function run() {
         await client.connect();
         const database = client.db("deliverydata");
         const delivery_man = database.collection("delivery_man");
-        // create a document to insert
-        const doc = {
-            name: "namae",
-            email: "email@gmail.com",
-        }
-        const result = await delivery_man.insertOne(doc);
-        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        //GET API
+        app.get('/users', async (req, res) => {
+            const cursor = delivery_man.find({});
+            const users = await cursor.toArray();
+            res.send(users);
+        })
+        //POST API
+        app.post('/users', async (req, res) => {
+            const newMan = req.body;
+            const result = await delivery_man.insertOne(newMan);
+            console.log('hitting the post', req.body);
+            console.log('added user', result);
+            res.json(result);
+        })
+        // // create a document to insert
+        // const doc = {
+        //     name: "namae",
+        //     email: "email@gmail.com",
+        // }
+        // const result = await delivery_man.insertOne(doc);
+        // console.log(`A document was inserted with the _id: ${result.insertedId}`);
     } finally {
-        await client.close();
+        // await client.close();
     }
 }
 run().catch(console.dir);
