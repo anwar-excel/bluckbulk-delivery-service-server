@@ -4,6 +4,7 @@ require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
+const ObjectId = require('mongodb').ObjectId;
 
 //middleware
 app.use(cors());
@@ -24,13 +25,54 @@ async function run() {
             const cursor = delivery_man.find({});
             const users = await cursor.toArray();
             res.send(users);
+        });
+        //SINGLE ID
+        app.get('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const user = await delivery_man.findOne(query);
+            console.log('load user with id', id);
+            res.send(user);
         })
+
         //POST API
         app.post('/users', async (req, res) => {
             const newMan = req.body;
             const result = await delivery_man.insertOne(newMan);
             console.log('hitting the post', req.body);
             console.log('added user', result);
+            res.json(result);
+        });
+
+        // 
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const filter = { _id: ObjectId(id) };
+
+
+            // this option instructs the method to create a document if no documents match the filter
+            const options = { upsert: true };
+            // create a document that sets the plot of the movie
+            const updateDoc = {
+                $set: {
+                    name: req.body.name,
+                    email: req.body.email
+
+                },
+            };
+            const result = await delivery_man.updateOne(filter, updateDoc, options);
+            console.log(req.body);
+            console.log(result);
+            res.json(result);
+        })
+
+        //DELETE API
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await delivery_man.deleteOne(query);
+            console.log('deleting user with id ', result);
             res.json(result);
         })
         // // create a document to insert
