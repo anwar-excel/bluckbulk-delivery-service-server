@@ -102,7 +102,7 @@ run().catch(console.dir);
 // run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('blackbuck-delivery-service-bd-server');
+    res.send('blackbuck-delivery-service-bd-server footer');
 });
 
 app.listen(port, () => {
