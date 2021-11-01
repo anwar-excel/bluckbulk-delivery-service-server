@@ -91,12 +91,7 @@ async function run() {
             console.log('load user with id', id);
             res.send(user);
         })
-        //Add food
-        app.get('/food', async (req, res) => {
-            const cursor = food.find({})
-            const products = await cursor.toArray([]);
-            res.send(products);
-        })
+
         //POST API
         app.post('/food', async (req, res) => {
             const newMan = req.body;
